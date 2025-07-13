@@ -67,7 +67,7 @@ export class MailService {
             display: inline-block;
             margin: 25px 0;
             background-color: #000;
-            color: #fff;
+            color: #FFFFFF;
             padding: 12px 22px;
             text-decoration: none;
             border-radius: 5px;
@@ -93,13 +93,14 @@ export class MailService {
           <div class="wrapper">
             <div class="card">
               <div class="header">
-                <h1>Welcome to Our App ☺</h1>
+                <h1>🤍 Welcome to Our App 🤍</h1>
               </div>
               <div class="content">
                 <h2>Hello, ${name}!</h2>
                 <p>Thank you for signing up! We’re thrilled to have you join us.</p>
                 <p><a href="https://yourapp.com/start" class="btn">Get Started</a></p>
                 <p>If you have any questions, feel free to reach out:</p>
+                <p>Don't forget this is demo app :)</p>
                 <p><a href="mailto:support@yourapp.com">support@yourapp.com</a></p>
               </div>
               <div class="footer">

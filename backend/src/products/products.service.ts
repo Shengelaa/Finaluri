@@ -8,20 +8,33 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { Product } from './schema/product.schema';
 
 @Injectable()
 export class ProductsService {
-  constructor(@InjectModel('product') private productModel: Model<Product>) {}
+  constructor(
+    @InjectModel('product') private productModel: Model<Product>,
+    private readonly cloudinaryService: CloudinaryService,
+  ) {}
 
-  async create({ title, desc, price, quantity, category }: CreateProductDto) {
+  async create(
+    { title, desc, price, quantity, category }: CreateProductDto,
+    file?: Express.Multer.File,
+  ) {
+    let imageUrl = '';
+    if (file) {
+      const uploadResult = await this.cloudinaryService.uploadImage(file);
+      imageUrl = uploadResult.secure_url;
+    }
+
     const newProduct = await this.productModel.create({
       title,
       desc,
       category,
       quantity,
       price,
+      imageUrl, 
     });
 
     return { success: 'ok', data: newProduct };
