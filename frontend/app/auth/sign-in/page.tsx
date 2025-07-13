@@ -71,7 +71,14 @@ export default function SignIn() {
           <CardTitle>Sign In</CardTitle>
 
           <CardAction>
-            <Button variant="link">Sign Up</Button>
+            <Button
+              variant="link"
+              type="button"
+              className="cursor-pointer"
+              onClick={() => router.push("/auth/sign-up")}
+            >
+              Sign Up
+            </Button>
           </CardAction>
         </CardHeader>
         <form onSubmit={handleSubmit(onSubmit)}>

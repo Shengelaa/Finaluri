@@ -2,7 +2,7 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
-  OnModuleInit,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -10,7 +10,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { Product } from './schema/product.schema';
+import { IsAuthGuard } from 'src/auth/guards/isAuth.guard';
 
+UseGuards(IsAuthGuard);
 @Injectable()
 export class ProductsService {
   constructor(
@@ -34,7 +36,7 @@ export class ProductsService {
       category,
       quantity,
       price,
-      imageUrl, 
+      imageUrl,
     });
 
     return { success: 'ok', data: newProduct };
@@ -55,30 +57,34 @@ export class ProductsService {
     return findProduct;
   }
 
-  async update(id: string, updateProductDto: UpdateProductDto) {
+  async update(
+    id: string,
+    updateProductDto: UpdateProductDto,
+    file?: Express.Multer.File,
+  ) {
     if (!Types.ObjectId.isValid(id)) {
       throw new BadRequestException('Invalid product ID format');
     }
-    const { title, desc, quantity, price, category } = updateProductDto;
     const product = await this.productModel.findById(id);
     if (!product) {
       throw new NotFoundException('Not Found');
     }
 
-    const productupdate = await this.productModel.findByIdAndUpdate(
+    let imageUrl = product.imageUrl;
+    if (file) {
+      const uploadResult = await this.cloudinaryService.uploadImage(file);
+      imageUrl = uploadResult.secure_url;
+    }
+
+    const updated = await this.productModel.findByIdAndUpdate(
       id,
       {
-        title,
-        desc,
-        quantity,
-        price,
-        category,
+        ...updateProductDto,
+        imageUrl,
       },
-      {
-        new: true,
-      },
+      { new: true },
     );
-    return productupdate;
+    return updated;
   }
 
   async remove(id: string) {

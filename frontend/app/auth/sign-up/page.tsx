@@ -30,13 +30,7 @@ export default function SignUp() {
     resolver: yupResolver(signUpSchema),
   });
   const role = "user";
-  const onSubmit = async ({
-    name,
-    lastname,
-    email,
-    password,
-   
-  }: SignupType) => {
+  const onSubmit = async ({ name, lastname, email, password }: SignupType) => {
     try {
       const resp = await axiosInstance.post("/auth/sign-up", {
         name,
@@ -77,7 +71,14 @@ export default function SignUp() {
           <CardTitle>Create a new account</CardTitle>
 
           <CardAction>
-            <Button variant="link">Sign In</Button>
+            <Button
+              variant="link"
+              type="button"
+              className="cursor-pointer"
+              onClick={() => router.push("/auth/sign-in")}
+            >
+              Sign In
+            </Button>
           </CardAction>
         </CardHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -103,7 +104,7 @@ export default function SignUp() {
                   required
                 />
               </div>
-   
+
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input

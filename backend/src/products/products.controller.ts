@@ -6,17 +6,16 @@ import {
   Patch,
   Param,
   Delete,
-  UseGuards,
   UseInterceptors,
   UploadedFile,
+  UseGuards,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { IsAuthGuard } from 'src/auth/guards/isAuth.guard';
-
-// @UseGuards(IsAuthGuard)
+@UseGuards(IsAuthGuard)
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
@@ -41,8 +40,13 @@ export class ProductsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-    return this.productsService.update(id, updateProductDto);
+  @UseInterceptors(FileInterceptor('file'))
+  update(
+    @Param('id') id: string,
+    @Body() updateProductDto: UpdateProductDto,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
+    return this.productsService.update(id, updateProductDto, file);
   }
 
   @Delete(':id')
