@@ -30,6 +30,15 @@ export default function Home() {
   const [editFile, setEditFile] = useState<File | null>(null);
   const [search, setSearch] = useState("");
   const { cart, addToCart } = useCart();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const SidebarLayout = () => {
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+  };
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
 
   useEffect(() => {
     const t = getCookie("token");
@@ -158,7 +167,58 @@ export default function Home() {
 
   return (
     <div className="max-w-7xl mx-auto py-10 px-4">
-      <header className="flex flex-col md:flex-row items-center justify-between gap-6 mb-10 bg-white/80 rounded-xl shadow p-6">
+      <div className="relative">
+        <div
+          className={`fixed top-0 left-0 h-full w-64 bg-black text-white p-6 z-40 transition-transform duration-500 ease-in-out ${
+            sidebarOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
+        >
+          {sidebarOpen && (
+            <button
+              onClick={toggleSidebar}
+              className="absolute top-4 right-4 h-10 w-10 rounded-full bg-white text-black flex items-center justify-center z-50 cursor-pointer"
+            >
+              ✕
+            </button>
+          )}
+
+          <h2 className="text-xl font-bold mb-6 mt-12">Menu</h2>
+          <div className="flex flex-col gap-4 w-full justify-center items-center">
+            <div className="bg-white w-full max-w-60  rounded-lg shadow-md p-4 mt-8 text-black">
+              <h3 className="text-lg font-semibold mb-10">Your Account Info</h3>
+              <p className="text-lg font-semibold mb-6">Name: {user?.name}</p>
+              <p className="text-lg font-semibold mb-6">
+                Last Name: {user?.lastname}
+              </p>
+              <p className="text-sm font-semibold">Email: {user?.email}</p>
+            </div>
+            <button
+              className="flex h-12 bg-white w-54 text-black items-center justify-center rounded-[20px] text-lg font-semibold shadow-md hover:bg-black hover:text-white transition-colors duration-700 hover:border-white border-[1.5px] border-black cursor-pointer mt-40"
+              onClick={() => {
+                deleteCookie("token");
+                router.push("/auth/sign-in");
+              }}
+            >
+              Logout
+            </button>
+          </div>
+        </div>
+
+        {!sidebarOpen && (
+          <button
+            onClick={toggleSidebar}
+            className="fixed top-4 left-4 h-10 w-10 rounded-full bg-black text-white flex items-center justify-center z-50 cursor-pointer"
+          >
+            ☰
+          </button>
+        )}
+
+        <div className="ml-0 sm:ml-64 p-10 transition-all duration-300">
+          <h1 className="text-2xl font-semibold">Main Content Here</h1>
+        </div>
+      </div>
+
+      <header className="flex flex-col md:flex-row items-center justify-between gap-6 mb-10 bg-white/80 rounded-xl shadow p-6 flex-1">
         <div>
           <h1 className="text-4xl font-bold text-gray-800 mb-2">
             Shoes Catalog
@@ -216,15 +276,30 @@ export default function Home() {
             )}
           </button>
           {user?.role === "admin" && (
-            <Button
-              className="cursor-pointer"
-              onClick={() => router.push("/create-product")}
-            >
-              + New Product
-            </Button>
+            <div>
+              <Button
+                className="cursor-pointer"
+                onClick={() => router.push("/create-product")}
+              >
+                + New Product
+              </Button>
+              <Button
+                className="cursor-pointer ml-2"
+                onClick={() => {
+                  if (user) {
+                    router.push("/order-managment");
+                  } else {
+                    alert("Please log in to manage orders.");
+                  }
+                }}
+              >
+                Orders
+              </Button>
+            </div>
           )}
         </div>
       </header>
+
       {user?.role === "admin" && (
         <h2 className="text-1xl font-bold mb-8 text-center text-green-600">
           Welcome, {user.name}! You are logged in as an admin.
