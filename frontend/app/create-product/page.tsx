@@ -73,9 +73,14 @@ export default function CreateProduct() {
     Object.entries(form).forEach(([key, value]) => formData.append(key, value));
     if (file) formData.append("file", file);
 
+    const token = getCookie("token");
+
     try {
       const res = await axiosInstance.post("/products", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
       });
       if (res.status === 201 || res.status === 200) {
         setMessage("Product created!");

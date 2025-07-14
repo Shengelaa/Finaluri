@@ -15,6 +15,8 @@ import { axiosInstance } from "@/lib/axios-instance";
 import { deleteCookie, getCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { useCart } from "./CartContext";
 
 export default function Home() {
   const router = useRouter();
@@ -26,6 +28,8 @@ export default function Home() {
   const [editForm, setEditForm] = useState<any>({});
   const [editLoading, setEditLoading] = useState(false);
   const [editFile, setEditFile] = useState<File | null>(null);
+  const [search, setSearch] = useState("");
+  const { cart, addToCart } = useCart();
 
   useEffect(() => {
     const t = getCookie("token");
@@ -140,26 +144,102 @@ export default function Home() {
 
   if (!tokenChecked) return null;
 
+  const filteredPosts = posts.filter((p) =>
+    p.category.toLowerCase().includes(search.trim().toLowerCase())
+  );
+
   return (
     <div className="max-w-7xl mx-auto py-10 px-4">
+      <header className="flex flex-col md:flex-row items-center justify-between gap-6 mb-10 bg-white/80 rounded-xl shadow p-6">
+        <div>
+          <h1 className="text-4xl font-bold text-gray-800 mb-2">
+            Shoes Catalog
+          </h1>
+          <p className="text-gray-500 text-lg">
+            Browse and manage shoes. Search by{" "}
+            <span className="font-semibold">category</span>.
+          </p>
+        </div>
+        <div className="flex items-center gap-3 w-full md:w-auto">
+          <div className="relative w-full md:w-64">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none text-xl">
+              <svg
+                width="20"
+                height="20"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+            </span>
+            <Input
+              type="text"
+              placeholder="Search by category..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-10 w-full cursor-text"
+            />
+          </div>
+
+          <button
+            className="relative ml-2 cursor-pointer p-2 rounded-full hover:bg-gray-100 transition-colors"
+            onClick={() => router.push("/cart")}
+            aria-label="Cart"
+          >
+            <svg
+              width="28"
+              height="28"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+            >
+              <circle cx="9" cy="21" r="1.5" />
+              <circle cx="20" cy="21" r="1.5" />
+              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h7.72a2 2 0 0 0 2-1.61L23 6H6" />
+            </svg>
+            {cart.length > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full text-xs px-2">
+                {cart.reduce((sum, item) => sum + item.quantity, 0)}
+              </span>
+            )}
+          </button>
+          {user?.role === "admin" && (
+            <Button
+              className="cursor-pointer"
+              onClick={() => router.push("/create-product")}
+            >
+              + New Product
+            </Button>
+          )}
+        </div>
+      </header>
       {user?.role === "admin" && (
-        <h1 className="text-1xl font-bold mb-8 text-center text-green-600">
-          Welcome, {user.name}! You are logged in as an admin. more buttons will
-          show
-        </h1>
+        <h2 className="text-1xl font-bold mb-8 text-center text-green-600">
+          Welcome, {user.name}! You are logged in as an admin.
+        </h2>
       )}
-      {user?.role === "admin" && (
-        <Button
-          className="cursor-pointer"
-          onClick={() => router.push("/create-product")}
-        >
-          Create A New Product
-        </Button>
-      )}
-      <h1 className="text-3xl font-bold mb-8 text-center">Product Catalog</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
-        {posts.map((p) => (
-          <Card className="flex flex-col h-full shadow-lg" key={p.id}>
+        {filteredPosts.length === 0 && (
+          <div className="col-span-full text-center text-gray-400 text-lg py-10">
+            No products found.
+          </div>
+        )}
+        {filteredPosts.map((p) => (
+          <motion.div
+            key={p.id}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            whileHover={{
+              scale: 1.05,
+              boxShadow: "0 8px 32px rgba(0,0,0,0.18)",
+            }}
+            transition={{ duration: 0.7 }}
+            className="flex flex-col h-full shadow-lg bg-white rounded-xl"
+          >
             {p.imageUrl && (
               <div className="px-4 pt-4">
                 <img
@@ -235,6 +315,7 @@ export default function Home() {
                     <Button
                       type="button"
                       variant="outline"
+                      className="cursor-pointer"
                       onClick={() => {
                         setEditingId(null);
                         setEditFile(null);
@@ -257,18 +338,25 @@ export default function Home() {
                     <span className="font-semibold">Quantity:</span>{" "}
                     {p.quantity}
                   </div>
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-gray-500 mb-[20px]">
                     Created: {new Date(p.createdAt).toLocaleString()}
                   </div>
+                  <Button
+                    className="mt-2 mb-4 cursor-pointer"
+                    onClick={() => addToCart(p)}
+                  >
+                    Add to Cart
+                  </Button>
                 </>
               )}
             </CardContent>
             {user?.role === "admin" && editingId !== p.id && (
-              <CardFooter className="flex gap-2">
+              <CardFooter className="flex gap-2 mb-4">
                 <Button variant="outline" onClick={() => handleEdit(p)}>
                   Edit
                 </Button>
                 <Button
+                  className="cursor-pointer"
                   variant="destructive"
                   onClick={() => handleDelete(p.id)}
                 >
@@ -276,7 +364,7 @@ export default function Home() {
                 </Button>
               </CardFooter>
             )}
-          </Card>
+          </motion.div>
         ))}
       </div>
     </div>
