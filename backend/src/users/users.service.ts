@@ -27,9 +27,8 @@ export class UsersService {
   findAll() {
     return this.userModel.find();
   }
-
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: string): Promise<User | null> {
+    return this.userModel.findById(id).exec();
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

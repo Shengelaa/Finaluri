@@ -67,7 +67,7 @@ export default function CartPage() {
                   </Button>
 
                   <Button
-                    className="bg-white text-black border-[1.5px] border-black cursor-pointer"
+                    className="bg-white text-black border-[1.5px] border-black cursor-pointer hover:bg-red-800 hover:text-white hover:border-white transition-all duration-400"
                     size="sm"
                     onClick={() => removeFromCart(item.id)}
                   >
@@ -81,10 +81,17 @@ export default function CartPage() {
           <div className="mt-8 flex justify-between items-center">
             <div className="text-xl font-bold">Total: ${total.toFixed(2)}</div>
             <div className="flex gap-2">
-              <Button variant="outline" onClick={clearCart}>
+              <Button
+                variant="outline"
+                className="cursor-pointer"
+                onClick={clearCart}
+              >
                 Clear Cart
               </Button>
-              <Button onClick={() => router.push("/checkout")}>
+              <Button
+                className="cursor-pointer"
+                onClick={() => router.push("/checkout")}
+              >
                 Proceed to Checkout
               </Button>
             </div>

@@ -8,5 +8,10 @@ import { userSchema } from './schema/user.schema';
   imports: [MongooseModule.forFeature([{ schema: userSchema, name: 'users' }])],
   controllers: [UsersController],
   providers: [UsersService],
+  exports: [UsersService, UsersModule],
 })
-export class UsersModule {}
+export class UsersModule {
+  findOne(id: any) {
+    throw new Error('Method not implemented.');
+  }
+}

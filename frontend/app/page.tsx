@@ -60,7 +60,7 @@ export default function Home() {
   useEffect(() => {
     if (!token) return;
 
-    const getCurrentUser = async () => {
+    const getCurrentUser = async () => { 
       try {
         const resp = await axiosInstance.get("/auth/current-user", {
           headers: { Authorization: `Bearer ${token}` },
