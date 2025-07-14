@@ -60,7 +60,7 @@ export default function Home() {
   useEffect(() => {
     if (!token) return;
 
-    const getCurrentUser = async () => { 
+    const getCurrentUser = async () => {
       try {
         const resp = await axiosInstance.get("/auth/current-user", {
           headers: { Authorization: `Bearer ${token}` },
@@ -124,6 +124,7 @@ export default function Home() {
           },
           {
             headers: { Authorization: `Bearer ${token}` },
+            params: { userId: user._id },
           }
         );
       }
@@ -133,12 +134,19 @@ export default function Home() {
     } catch {}
     setEditLoading(false);
   };
-
   const handleDelete = async (id: string) => {
     if (!confirm("Uechveli wamshleli xar ??")) return;
+
+    if (!user || !user._id) {
+      alert("User not loaded. Please try again.");
+      return;
+    }
+
     await axiosInstance.delete(`/products/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
+      params: { userId: user._id },
     });
+
     fetchProducts(token!);
   };
 

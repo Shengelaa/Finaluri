@@ -30,7 +30,8 @@ export default function Page() {
         </p>
         <p className="text-md text-gray-900">
           Redirecting to homepage in{" "}
-          <span className="font-semibold text-red-800">{countdown}</span> seconds...
+          <span className="font-semibold text-red-800">{countdown}</span>{" "}
+          seconds...
         </p>
       </div>
     </div>

@@ -28,6 +28,11 @@ export default function CreateProduct() {
   const [message, setMessage] = useState("");
   const [forbidden, setForbidden] = useState(false);
   const [checked, setChecked] = useState(false);
+  const [user, setUser] = useState<{
+    _id: string;
+    email: string;
+    role: string;
+  } | null>(null);
 
   useEffect(() => {
     const checkAdmin = async () => {
@@ -40,11 +45,17 @@ export default function CreateProduct() {
         const resp = await axiosInstance.get("/auth/current-user", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        if (resp.status === 200 && resp.data.role !== "admin") {
+        if (resp.status === 200) {
+          setUser(resp.data);
+          if (resp.data.role !== "admin") {
+            setForbidden(true);
+            setTimeout(() => router.replace("/"), 1500);
+          }
+        } else {
           setForbidden(true);
           setTimeout(() => router.replace("/"), 1500);
         }
-      } catch {
+      } catch (error) {
         deleteCookie("token");
         router.replace("/");
       }
@@ -67,11 +78,20 @@ export default function CreateProduct() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!user?._id) {
+      setMessage("User ID not found. Cannot create product.");
+      return;
+    }
+
     setLoading(true);
     setMessage("");
+
     const formData = new FormData();
     Object.entries(form).forEach(([key, value]) => formData.append(key, value));
     if (file) formData.append("file", file);
+
+    console.log("Submitting product with userId:", user._id);
 
     const token = getCookie("token");
 
@@ -81,7 +101,11 @@ export default function CreateProduct() {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
         },
+        params: {
+          userId: user._id, 
+        },
       });
+
       if (res.status === 201 || res.status === 200) {
         setMessage("Product created!");
         setForm({ title: "", desc: "", price: "", quantity: "", category: "" });
@@ -89,9 +113,11 @@ export default function CreateProduct() {
       } else {
         setMessage("Failed to create product.");
       }
-    } catch {
+    } catch (error) {
+      console.error("Create product error:", error);
       setMessage("Error occurred.");
     }
+
     setLoading(false);
   };
 
@@ -192,9 +218,7 @@ export default function CreateProduct() {
               />
             </div>
             {message && (
-              <div className="text-center text-sm text-green-600">
-                {message}
-              </div>
+              <div className="text-center text-sm text-green-600">{message}</div>
             )}
           </CardContent>
           <CardFooter>

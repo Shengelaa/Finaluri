@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -11,6 +12,8 @@ import { Model, Types } from 'mongoose';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { Product } from './schema/product.schema';
 import { IsAuthGuard } from 'src/auth/guards/isAuth.guard';
+import { UsersService } from 'src/users/users.service';
+import { AuthService } from 'src/auth/auth.service';
 
 UseGuards(IsAuthGuard);
 @Injectable()
@@ -18,12 +21,25 @@ export class ProductsService {
   constructor(
     @InjectModel('product') private productModel: Model<Product>,
     private readonly cloudinaryService: CloudinaryService,
+    private readonly usersService: UsersService,
+    private readonly authService: AuthService,
   ) {}
 
   async create(
     { title, desc, price, quantity, category }: CreateProductDto,
     file?: Express.Multer.File,
+    userId?: string,
   ) {
+    if (!userId) {
+      throw new BadRequestException('Authorization token is required');
+    }
+
+    const user = await this.authService.getCurrentUser(userId);
+    if (!user || user.role !== 'admin') {
+      throw new BadRequestException(
+        'You are not authorized to create products',
+      );
+    }
     let imageUrl = '';
     if (file) {
       const uploadResult = await this.cloudinaryService.uploadImage(file);
@@ -61,7 +77,17 @@ export class ProductsService {
     id: string,
     updateProductDto: UpdateProductDto,
     file?: Express.Multer.File,
+    userId?: String,
   ) {
+    if (!userId) {
+      throw new BadRequestException('Authorization token is required');
+    }
+    const user = await this.authService.getCurrentUser(userId);
+    if (!user || user.role !== 'admin') {
+      throw new BadRequestException(
+        'You are not authorized to update products',
+      );
+    }
     if (!Types.ObjectId.isValid(id)) {
       throw new BadRequestException('Invalid product ID format');
     }
@@ -87,7 +113,21 @@ export class ProductsService {
     return updated;
   }
 
-  async remove(id: string) {
+  async remove(id: string, userId: string) {
+    console.log(userId);
+    if (!userId) {
+      throw new BadRequestException('Authorization token is required');
+    }
+
+    const user = await this.authService.getCurrentUser(userId);
+    console.log('userrr', user);
+
+    if (!user || user.role !== 'admin') {
+      throw new BadRequestException(
+        'You are not authorized to delete products',
+      );
+    }
+
     if (!Types.ObjectId.isValid(id)) {
       throw new BadRequestException('Invalid product ID format');
     }

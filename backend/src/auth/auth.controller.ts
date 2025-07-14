@@ -11,18 +11,18 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('sign-up')
-  signUp(@Body() signUpDto: SignUpDto){
-    return this.authService.signUp(signUpDto)
+  signUp(@Body() signUpDto: SignUpDto) {
+    return this.authService.signUp(signUpDto);
   }
 
   @Post('sign-in')
-  signIn(@Body() signInDto: SignInDto){
-    return this.authService.signIn(signInDto)
+  signIn(@Body() signInDto: SignInDto) {
+    return this.authService.signIn(signInDto);
   }
 
   @Get('current-user')
   @UseGuards(IsAuthGuard)
-  getCurrentUser(@UserId() userId){
-    return this.authService.getCurrentUser(userId)
+  getCurrentUser(@UserId() userId) {
+    return this.authService.getCurrentUser(userId);
   }
 }

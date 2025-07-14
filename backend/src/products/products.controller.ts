@@ -9,6 +9,8 @@ import {
   UseInterceptors,
   UploadedFile,
   UseGuards,
+  Req,
+  Query,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ProductsService } from './products.service';
@@ -25,8 +27,10 @@ export class ProductsController {
   create(
     @Body() createProductDto: CreateProductDto,
     @UploadedFile() file: Express.Multer.File,
+    @Query('userId') userId: string,
   ) {
-    return this.productsService.create(createProductDto, file);
+    console.log(userId, 'userId from controller');
+    return this.productsService.create(createProductDto, file, userId);
   }
 
   @Get()
@@ -44,13 +48,15 @@ export class ProductsController {
   update(
     @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto,
+    @Query('userId') userId: string,
     @UploadedFile() file?: Express.Multer.File,
   ) {
-    return this.productsService.update(id, updateProductDto, file);
+    return this.productsService.update(id, updateProductDto, file, userId);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.productsService.remove(id);
+  remove(@Param('id') id: string, @Query('userId') userId: string) {
+    console.log(userId, 'userId from controller');
+    return this.productsService.remove(id, userId);
   }
 }
