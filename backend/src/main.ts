@@ -10,6 +10,13 @@ let cachedServer: Express;
 
 async function bootstrap() {
   const expressApp = express();
+  expressApp.options('*', (req: Request, res: Response) => {
+    res.header('Access-Control-Allow-Origin', process.env.FRONT_URL || '');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.sendStatus(200);
+  });
   const app = await NestFactory.create(
     AppModule,
     new ExpressAdapter(expressApp),
