@@ -11,20 +11,11 @@ let cachedServer: Express;
 async function bootstrap() {
   const expressApp = express();
 
-
+  // Manual CORS headers for preflight requests
   expressApp.use((req: Request, res: Response, next) => {
-    res.setHeader(
-      'Access-Control-Allow-Origin',
-      'https://ecommerce-lac-five.vercel.app',
-    );
-    res.setHeader(
-      'Access-Control-Allow-Methods',
-      'GET,POST,PUT,DELETE,OPTIONS',
-    );
-    res.setHeader(
-      'Access-Control-Allow-Headers',
-      'Content-Type, Authorization',
-    );
+    res.setHeader('Access-Control-Allow-Origin', 'https://ecommerce-lac-five.vercel.app');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
 
     if (req.method === 'OPTIONS') {
@@ -34,11 +25,7 @@ async function bootstrap() {
     next();
   });
 
-  const app = await NestFactory.create(
-    AppModule,
-    new ExpressAdapter(expressApp),
-  );
-
+  const app = await NestFactory.create(AppModule, new ExpressAdapter(expressApp));
 
   app.enableCors({
     origin: 'https://ecommerce-lac-five.vercel.app',
@@ -57,4 +44,13 @@ async function bootstrap() {
 
   await app.init();
   return expressApp;
+}
+
+export default async function handler(req: Request, res: Response) {
+  if (!cachedServer) {
+    cachedServer = await bootstrap();
+    console.log('✅ Server bootstrapped!');
+  }
+
+  return cachedServer(req, res);
 }
