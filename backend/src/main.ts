@@ -10,23 +10,38 @@ let cachedServer: Express;
 
 async function bootstrap() {
   const expressApp = express();
-  // expressApp.options('*', (req: Request, res: Response) => {
-  //   res.header(
-  //     'Access-Control-Allow-Origin',
-  //     'https://ecommerce-lac-five.vercel.app',
-  //   );
-  //   res.header('Access-Control-Allow-Credentials', 'true');
-  //   res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
-  //   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  //   res.sendStatus(200);
-  // });
+
+
+  expressApp.use((req: Request, res: Response, next) => {
+    res.setHeader(
+      'Access-Control-Allow-Origin',
+      'https://ecommerce-lac-five.vercel.app',
+    );
+    res.setHeader(
+      'Access-Control-Allow-Methods',
+      'GET,POST,PUT,DELETE,OPTIONS',
+    );
+    res.setHeader(
+      'Access-Control-Allow-Headers',
+      'Content-Type, Authorization',
+    );
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+
+    if (req.method === 'OPTIONS') {
+      return res.status(200).end();
+    }
+
+    next();
+  });
+
   const app = await NestFactory.create(
     AppModule,
     new ExpressAdapter(expressApp),
   );
 
+
   app.enableCors({
-    origin: process.env.FRONT_URL,
+    origin: 'https://ecommerce-lac-five.vercel.app',
     credentials: true,
   });
 
@@ -42,17 +57,4 @@ async function bootstrap() {
 
   await app.init();
   return expressApp;
-}
-
-export default async function handler(req: Request, res: Response) {
-  try {
-    if (!cachedServer) {
-      cachedServer = await bootstrap();
-      console.log('✅ Bootstrap successful');
-    }
-    return cachedServer(req, res);
-  } catch (e) {
-    console.error('🔥 Handler error:', e);
-    res.status(500).send('Internal server error during handler');
-  }
 }
