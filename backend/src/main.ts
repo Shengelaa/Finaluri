@@ -4,10 +4,9 @@ import { ValidationPipe } from '@nestjs/common';
 import { LoggingGuard } from './common/guards/logger.guard';
 
 import { ExpressAdapter } from '@nestjs/platform-express';
-import * as express from 'express';
-import type { Request, Response } from 'express';
+import express, { Express, Request, Response } from 'express';
 
-let cachedServer;
+let cachedServer: Express;
 
 async function bootstrap() {
   const expressApp = express();
