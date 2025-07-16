@@ -16,7 +16,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { IsAuthGuard } from 'src/auth/guards/isAuth.guard';
+import { IsAuthGuard } from '../auth/guards/isAuth.guard';
 @UseGuards(IsAuthGuard)
 @Controller('products')
 export class ProductsController {

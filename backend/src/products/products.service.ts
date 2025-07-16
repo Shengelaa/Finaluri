@@ -11,7 +11,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { Product } from './schema/product.schema';
-import { IsAuthGuard } from 'src/auth/guards/isAuth.guard';
+import { IsAuthGuard } from '../auth/guards/isAuth.guard';
 import { UsersService } from 'src/users/users.service';
 import { AuthService } from 'src/auth/auth.service';
 
