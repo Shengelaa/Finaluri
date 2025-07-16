@@ -12,8 +12,8 @@ import { Model, Types } from 'mongoose';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { Product } from './schema/product.schema';
 import { IsAuthGuard } from '../auth/guards/isAuth.guard';
-import { UsersService } from 'src/users/users.service';
-import { AuthService } from 'src/auth/auth.service';
+import { UsersService } from '../users/users.service';
+import { AuthService } from '../auth/auth.service';
 
 UseGuards(IsAuthGuard);
 @Injectable()
