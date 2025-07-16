@@ -23,6 +23,7 @@ import { setCookie } from "cookies-next";
 import { axiosInstance } from "@/lib/axios-instance";
 
 export default function SignIn() {
+  console.log("Backend URL:", process.env.NEXT_PUBLIC_SERVER_URL);
   const router = useRouter();
   const {
     register,
