@@ -14,6 +14,7 @@ import { OrdersModule } from './orders/orders.module';
     ConfigModule.forRoot({ isGlobal: true }),
     ProductsModule,
     AuthModule,
+    UsersModule,
     MongooseModule.forRoot(process.env.MONGO_URL!),
     OrdersModule,
   ],
