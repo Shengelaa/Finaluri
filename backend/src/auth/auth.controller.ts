@@ -3,7 +3,7 @@ import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { SignUpDto } from './dto/sign-up.dto';
 import { SignInDto } from './dto/sign-in.dto';
 import { IsAuthGuard } from './guards/isAuth.guard';
-import { UserId } from 'src/users/decorators/user.decorator';
+import { UserId } from '../users/decorators/user.decorator';
 import { AuthService } from './auth.service';
 
 @Controller('auth')

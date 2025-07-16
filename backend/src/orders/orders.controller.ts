@@ -12,7 +12,7 @@ import {
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
-import { IsAuthGuard } from 'src/auth/guards/isAuth.guard';
+import { IsAuthGuard } from '../auth/guards/isAuth.guard';
 import { CheckRoleDto } from './dto/check-admin.dto';
 @UseGuards(IsAuthGuard)
 @Controller('orders')

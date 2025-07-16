@@ -9,9 +9,9 @@ import { Model } from 'mongoose';
 import { Order, OrderDocument } from './schema/order.schema';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
-import { MailService } from 'src/purchaseemail/purchase.service';
-import { UsersService } from 'src/users/users.service';
-import { User } from 'src/users/schema/user.schema';
+import { MailService } from '../purchaseemail/purchase.service';
+import { UsersService } from '../users/users.service';
+import { User } from '../users/schema/user.schema';
 
 @Injectable()
 export class OrdersService {
@@ -51,7 +51,7 @@ export class OrdersService {
   }
 
   async findOne(id: string): Promise<Order> {
-    const order = await this.orderModel.findById(id)
+    const order = await this.orderModel.findById(id);
     if (!order) {
       throw new NotFoundException(`Order with id ${id} not found`);
     }
@@ -59,9 +59,11 @@ export class OrdersService {
   }
 
   async update(id: string, updateOrderDto: UpdateOrderDto): Promise<Order> {
-    const updatedOrder = await this.orderModel
-      .findByIdAndUpdate(id, updateOrderDto, { new: true })
-      
+    const updatedOrder = await this.orderModel.findByIdAndUpdate(
+      id,
+      updateOrderDto,
+      { new: true },
+    );
 
     if (!updatedOrder) {
       throw new NotFoundException(`Order with id ${id} not found`);
@@ -71,7 +73,7 @@ export class OrdersService {
   }
 
   async remove(id: string): Promise<Order> {
-    const deletedOrder = await this.orderModel.findByIdAndDelete(id)
+    const deletedOrder = await this.orderModel.findByIdAndDelete(id);
 
     if (!deletedOrder) {
       throw new NotFoundException(`Order with id ${id} not found`);
