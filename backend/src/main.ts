@@ -34,16 +34,15 @@ async function bootstrap() {
   return expressApp;
 }
 
-
 export default async function handler(req: Request, res: Response) {
-  if (!cachedServer) {
-    try {
+  try {
+    if (!cachedServer) {
       cachedServer = await bootstrap();
-    } catch (e) {
-      console.error('Bootstrap error:', e);
-      return res.status(500).send('Internal server error during init');
+      console.log('✅ Bootstrap successful');
     }
+    return cachedServer(req, res);
+  } catch (e) {
+    console.error('🔥 Handler error:', e);
+    res.status(500).send('Internal server error during handler');
   }
-
-  return cachedServer(req, res);
 }
