@@ -26,7 +26,7 @@ async function bootstrap() {
   );
 
   app.enableCors({
-    origin: 'https://ecommerce-lac-five.vercel.app',
+    origin: process.env.FRONT_URL,
     credentials: true,
   });
 
