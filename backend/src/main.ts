@@ -4,10 +4,11 @@ import { ValidationPipe } from '@nestjs/common';
 import { LoggingGuard } from './common/guards/logger.guard';
 
 import { ExpressAdapter } from '@nestjs/platform-express';
-import express, { Express } from 'express';
-
+import express, { Express, Request, Response } from 'express';
 
 const server = express();
+
+let isReady = false;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
@@ -25,13 +26,21 @@ async function bootstrap() {
   );
 
   await app.init();
+  isReady = true;
 }
 
+bootstrap(); 
 
-bootstrap();
 
+export default async function handler(req: Request, res: Response) {
+  if (!isReady) {
+    res.status(503).send('Server is starting, try again soon.');
+    return;
+  }
 
-export default server;
+  return server(req, res);
+}
+
 
 // export default async function handler(req: Request, res: Response) {
 //   if (!cachedServer) {
