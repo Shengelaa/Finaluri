@@ -17,7 +17,7 @@ async function bootstrap() {
       'https://ecommerce-lac-five.vercel.app',
       'https://finaluri-n1ax.vercel.app',
     ],
-    credentials: true, 
+    credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   });
@@ -39,9 +39,18 @@ async function bootstrap() {
 bootstrap();
 
 export default async function handler(req: Request, res: Response) {
+
+  if (req.method === 'OPTIONS') {
+    res.setHeader('Access-Control-Allow-Origin', 'https://ecommerce-lac-five.vercel.app');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    return res.status(200).end();
+  }
+
+  // ✅ Wait for server to be ready
   if (!isReady) {
-    res.status(503).send('Server is starting, try again soon.');
-    return;
+    return res.status(503).send('Server is starting, try again soon.');
   }
 
   return server(req, res);
