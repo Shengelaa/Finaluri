@@ -5,15 +5,21 @@ import { LoggingGuard } from './common/guards/logger.guard';
 
 import { ExpressAdapter } from '@nestjs/platform-express';
 import express, { Express, Request, Response } from 'express';
+import cors from 'cors';  
 
 const server = express();
-
 let isReady = false;
+
+server.use(cors({
+  origin: 'https://ecommerce-lac-five.vercel.app',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+}));
+
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
-
-  app.enableCors();
 
   app.useGlobalGuards(new LoggingGuard());
 
@@ -29,8 +35,7 @@ async function bootstrap() {
   isReady = true;
 }
 
-bootstrap(); 
-
+bootstrap();
 
 export default async function handler(req: Request, res: Response) {
   if (!isReady) {
