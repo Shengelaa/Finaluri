@@ -17,7 +17,10 @@ async function bootstrap() {
   );
 
   app.enableCors({
-    origin: '*',
+    origin: '*', 
+    credentials: true, 
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   });
 
   app.useGlobalGuards(new LoggingGuard());
