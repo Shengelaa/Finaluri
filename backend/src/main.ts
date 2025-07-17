@@ -6,21 +6,14 @@ import { LoggingGuard } from './common/guards/logger.guard';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import express, { Express, Request, Response } from 'express';
 
-let cachedServer: Express;
+const server = express();
+let isReady = false;
 
 async function bootstrap() {
-  const expressApp = express();
-
-  const app = await NestFactory.create(
-    AppModule,
-    new ExpressAdapter(expressApp),
-  );
+  const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
 
   app.enableCors({
-    origin: '*', 
-    credentials: true, 
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    origin: '*',
   });
 
   app.useGlobalGuards(new LoggingGuard());
@@ -34,10 +27,20 @@ async function bootstrap() {
   );
 
   await app.init();
-  return expressApp;
+  isReady = true;
 }
 
 bootstrap();
+
+export default async function handler(req: Request, res: Response) {
+  if (!isReady) {
+    res.status(503).send('Server is starting, try again soon.');
+    return;
+  }
+
+  return server(req, res);
+}
+
 // export default async function handler(req: Request, res: Response) {
 //   if (!cachedServer) {
 //     cachedServer = await bootstrap();
