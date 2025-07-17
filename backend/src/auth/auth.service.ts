@@ -6,7 +6,7 @@ import { User } from '../users/schema/user.schema';
 import * as bcrypt from 'bcrypt';
 import { SignInDto } from './dto/sign-in.dto';
 import { JwtService } from '@nestjs/jwt';
-import { MailService } from 'src/mail/mail.service'; 
+import { MailService } from '../mail/mail.service'; 
 
 @Injectable()
 export class AuthService {
