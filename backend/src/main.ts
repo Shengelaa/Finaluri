@@ -4,22 +4,17 @@ import { ValidationPipe } from '@nestjs/common';
 import { LoggingGuard } from './common/guards/logger.guard';
 
 import { ExpressAdapter } from '@nestjs/platform-express';
-import express, { Express, Request, Response } from 'express';
+import express, { Express } from 'express';
 
-let cachedServer: Express;
+
+const server = express();
 
 async function bootstrap() {
-  const expressApp = express();
-
-  const app = await NestFactory.create(
-    AppModule,
-    new ExpressAdapter(expressApp),
-  );
+  const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
 
   app.enableCors();
 
   app.useGlobalGuards(new LoggingGuard());
-  console.log('test');
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -30,8 +25,13 @@ async function bootstrap() {
   );
 
   await app.init();
-  return expressApp;
 }
+
+
+bootstrap();
+
+
+export default server;
 
 // export default async function handler(req: Request, res: Response) {
 //   if (!cachedServer) {
