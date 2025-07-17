@@ -2,9 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { LoggingGuard } from './common/guards/logger.guard';
-
 import { ExpressAdapter } from '@nestjs/platform-express';
-import express, { Express, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 
 const server = express();
 let isReady = false;
@@ -39,22 +38,32 @@ async function bootstrap() {
 bootstrap();
 
 export default async function handler(req: Request, res: Response) {
+  const origin = req.headers.origin;
 
-  if (req.method === 'OPTIONS') {
-    res.setHeader('Access-Control-Allow-Origin', 'https://ecommerce-lac-five.vercel.app');
+
+  if (
+    origin === 'https://ecommerce-lac-five.vercel.app' ||
+    origin === 'https://finaluri-n1ax.vercel.app'
+  ) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
     res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
+  }
+
+
+  if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
 
-  // ✅ Wait for server to be ready
+
   if (!isReady) {
     return res.status(503).send('Server is starting, try again soon.');
   }
 
   return server(req, res);
 }
+
 
 // export default async function handler(req: Request, res: Response) {
 //   if (!cachedServer) {
