@@ -13,10 +13,13 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
 
   app.enableCors({
-    origin: '*',
+    origin: [
+      'https://ecommerce-lac-five.vercel.app',
+      'https://finaluri-n1ax.vercel.app',
+    ],
+    credentials: true, 
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: false,
   });
 
   app.useGlobalGuards(new LoggingGuard());
