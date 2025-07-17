@@ -11,11 +11,15 @@ let cachedServer: Express;
 async function bootstrap() {
   const expressApp = express();
 
-  const app = await NestFactory.create(AppModule, new ExpressAdapter(expressApp));
+  const app = await NestFactory.create(
+    AppModule,
+    new ExpressAdapter(expressApp),
+  );
 
   app.enableCors();
 
   app.useGlobalGuards(new LoggingGuard());
+  console.log('test');
 
   app.useGlobalPipes(
     new ValidationPipe({
