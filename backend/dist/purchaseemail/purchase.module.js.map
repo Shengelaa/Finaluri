@@ -1,1 +1,0 @@
-{"version":3,"file":"purchase.module.js","sourceRoot":"","sources":["../../src/purchaseemail/purchase.module.ts"],"names":[],"mappings":";;;;;;;;;AAAA,2CAAwC;AACxC,yDAAiD;AAO1C,IAAM,UAAU,GAAhB,MAAM,UAAU;CAAG,CAAA;AAAb,gCAAU;qBAAV,UAAU;IAJtB,IAAA,eAAM,EAAC;QACN,SAAS,EAAE,CAAC,8BAAW,CAAC;QACxB,OAAO,EAAE,CAAC,8BAAW,CAAC;KACvB,CAAC;GACW,UAAU,CAAG"}
