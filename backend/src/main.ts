@@ -8,8 +8,12 @@ import express, { Request, Response, NextFunction } from 'express';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.enableCors();
-
+  app.enableCors({
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    allowedHeaders: 'Content-Type, Accept, Authorization',
+    credentials: true,
+  });
   app.useGlobalGuards(new LoggingGuard());
 
   app.useGlobalPipes(
