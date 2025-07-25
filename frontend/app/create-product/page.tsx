@@ -102,7 +102,7 @@ export default function CreateProduct() {
           Authorization: `Bearer ${token}`,
         },
         params: {
-          userId: user._id, 
+          userId: user._id,
         },
       });
 
@@ -218,15 +218,30 @@ export default function CreateProduct() {
               />
             </div>
             {message && (
-              <div className="text-center text-sm text-green-600">{message}</div>
+              <div className="text-center text-sm text-green-600">
+                {message}
+              </div>
             )}
           </CardContent>
           <CardFooter>
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button
+              type="submit"
+              className="w-full mt-4 cursor-pointer"
+              disabled={loading}
+            >
               {loading ? "Creating..." : "Create Product"}
             </Button>
           </CardFooter>
         </form>
+        <Button
+          type="submit"
+          className="mt-8 w-fit mx-auto cursor-pointer"
+          onClick={() => {
+            router.push("/");
+          }}
+        >
+          Back To The Main Page
+        </Button>
       </Card>
     </div>
   );

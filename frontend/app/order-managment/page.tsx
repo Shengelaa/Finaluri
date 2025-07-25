@@ -125,6 +125,15 @@ export default function Page() {
       <h1 className="text-4xl font-extrabold mb-10 text-gray-900 border-b border-gray-800 pb-4">
         Orders List
       </h1>
+      <Button
+        type="submit"
+        className="mt-8 w-fit mx-auto cursor-pointer mb-8"
+        onClick={() => {
+          router.push("/");
+        }}
+      >
+        Go Back To Main Page
+      </Button>
 
       {orders.length === 0 ? (
         <p className="text-center text-gray-600 text-lg">No orders found.</p>
