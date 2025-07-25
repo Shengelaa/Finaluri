@@ -63,7 +63,7 @@ export default function SignUp() {
     <>
       {loading && (
         <div className="fixed inset-0 bg-black/5 z-50 flex justify-center items-center">
-          <div className="w-12 h-12 border-[6px] border-gray-300 border-t-transparent rounded-full animate-spin" />
+          <div className="w-12 h-12 border-[6px] border-[#2E2E2E] border-t-transparent rounded-full animate-spin" />
         </div>
       )}
 
