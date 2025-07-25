@@ -12,6 +12,7 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { set } from "react-hook-form";
+import { Button } from "@/components/ui/button";
 
 type User = {
   _id: string;
@@ -56,6 +57,7 @@ export default function Page() {
   const [user, setUser] = useState<User | null>(null);
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const [checkOrder, setCheckOrder] = useState(true);
 
   const router = useRouter();
 
@@ -131,7 +133,7 @@ export default function Page() {
           {orders.map((order) => (
             <Card
               key={order._id}
-              className="border border-gray-800 bg-white shadow-md hover:shadow-lg transition-shadow duration-300 rounded-md bg-red-800  border-[5px] border-black pt-3 "
+              className="border border-gray-800 bg-white shadow-md hover:shadow-lg transition-shadow duration-300 rounded-md bg-gray-400  border-[5px] border-black pt-3 "
             >
               <CardHeader className="border-b border-gray-300 pb-3">
                 <CardTitle className="text-xl font-semibold text-white">
@@ -145,13 +147,12 @@ export default function Page() {
                   })}
                 </CardDescription>
               </CardHeader>
-
-              <CardContent className="space-y-4 text-white bg-red-800">
+              <CardContent className="space-y-4 text-white bg-gray-400">
                 <div>
                   <h3 className="font-semibold mb-1 border-b border-gray-200 pb-1 text-white">
                     Shipping Address
                   </h3>
-                  <p className="text-white">
+                  <p className="text-black font-bold underline">
                     {order.shippingAddress.building},{" "}
                     {order.shippingAddress.street}, {order.shippingAddress.city}
                     , {order.shippingAddress.country}
@@ -162,7 +163,7 @@ export default function Page() {
                   <h3 className="font-semibold mb-1 border-b border-gray-200 pb-1 text-white">
                     Payment Details
                   </h3>
-                  <p className="text-white">
+                  <p className="text-black font-bold underline">
                     Card Number: **** **** ****{" "}
                     {order.paymentDetails.cardNumber.slice(-4)} <br />
                     Expiry: {order.paymentDetails.expiry}
@@ -175,7 +176,10 @@ export default function Page() {
                   </h3>
                   <ul className="list-disc list-inside text-gray-700 max-h-36 overflow-auto ">
                     {order.items.map((item) => (
-                      <li key={item._id} className="text-white">
+                      <li
+                        key={item._id}
+                        className="text-black font-bold underline"
+                      >
                         Product ID: {item.productId} — Quantity: {item.quantity}{" "}
                         — Price: ${item.price}
                       </li>
@@ -193,6 +197,11 @@ export default function Page() {
                   </div>
                 )}
               </CardContent>
+
+              <div className="w-full flex flex-col justify-bottom align-bottom items-center h-full">
+                <Button className="w-fit">Check Order Out.</Button>
+                <Button className="w-fit mt-2">Order Done, {"(Delete)"}</Button>
+              </div>
             </Card>
           ))}
         </div>
