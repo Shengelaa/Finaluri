@@ -116,6 +116,7 @@ export default function SignUp() {
                 <div className="grid gap-2">
                   <Label htmlFor="password">Password</Label>
                   <Input
+                    maxLength={20}
                     {...register("password")}
                     id="password"
                     type="password"
